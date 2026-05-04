@@ -871,42 +871,6 @@
          ]
       },
       {
-         "description": "V (Ctrl) [Move File in Finder \u2014 Cmd+Option+V]",
-         "manipulators": [
-            {
-               "type": "basic",
-               "conditions": [
-                  {
-                     "type": "frontmost_application_if",
-                     "bundle_identifiers": [
-                        "^com\\.apple\\.finder$"
-                     ]
-                  }
-               ],
-               "from": {
-                  "key_code": "v",
-                  "modifiers": {
-                     "mandatory": [
-                        "control"
-                     ],
-                     "optional": [
-                        "any"
-                     ]
-                  }
-               },
-               "to": [
-                  {
-                     "key_code": "v",
-                     "modifiers": [
-                        "command",
-                        "option"
-                     ]
-                  }
-               ]
-            }
-         ]
-      },
-      {
          "description": "V (Ctrl)",
          "manipulators": [
             {
@@ -1873,12 +1837,21 @@
                   {
                      "key_code": "return_or_enter"
                   }
+               ],
+               "conditions": [
+                  {
+                     "type": "frontmost_application_unless",
+                     "bundle_identifiers": [
+                        "^com\\.microsoft\\.Excel$",
+                        "^com\\.apple\\.iWork\\.Numbers$"
+                     ]
+                  }
                ]
             }
          ]
       },
       {
-         "description": "Delete / Backspace [Move to Bin in Finder]",
+         "description": "M (Ctrl) [Move File in Finder \u2014 Cmd+Option+V]",
          "manipulators": [
             {
                "type": "basic",
@@ -1891,12 +1864,41 @@
                   }
                ],
                "from": {
+                  "key_code": "m",
+                  "modifiers": {
+                     "mandatory": [
+                        "control"
+                     ],
+                     "optional": [
+                        "any"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "v",
+                     "modifiers": [
+                        "command",
+                        "option"
+                     ]
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "description": "Delete (Win) [Move to Bin]",
+         "manipulators": [
+            {
+               "type": "basic",
+               "from": {
                   "key_code": "delete_or_backspace",
                   "modifiers": {
-                     "optional": [
-                        "shift",
-                        "option",
+                     "mandatory": [
                         "command"
+                     ],
+                     "optional": [
+                        "any"
                      ]
                   }
                },
@@ -1911,21 +1913,14 @@
             },
             {
                "type": "basic",
-               "conditions": [
-                  {
-                     "type": "frontmost_application_if",
-                     "bundle_identifiers": [
-                        "^com\\.apple\\.finder$"
-                     ]
-                  }
-               ],
                "from": {
                   "key_code": "delete_forward",
                   "modifiers": {
-                     "optional": [
-                        "shift",
-                        "option",
+                     "mandatory": [
                         "command"
+                     ],
+                     "optional": [
+                        "any"
                      ]
                   }
                },
@@ -1968,5 +1963,5 @@
          ]
       }
    ],
-   "title": "Windows Mode for macOS v22 - Microsoft Ergonomic Keyboard"
+   "title": "Windows Mode for macOS v26 - Microsoft Ergonomic Keyboard"
 }

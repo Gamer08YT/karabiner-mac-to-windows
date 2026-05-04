@@ -43,8 +43,8 @@ Most Karabiner Windows-mode profiles exclude Terminal, IDEs, and browsers from s
 | `Win+Shift+S` → Screenshot snip | Not included | ✓ |
 | `Win+Shift+F` → Screenshot toolbar | Not included | ✓ |
 | `F2` → Rename in Finder | Not included | ✓ |
-| `Delete` → Move to bin in Finder | Not included | ✓ |
-| `Ctrl+V` → Move files in Finder | Not included | ✓ |
+| `Win+Delete` → Move to Bin in Finder | Not included | ✓ |
+| `Ctrl+M` → Move files in Finder | Not included | ✓ |
 | `Win+D` → Show Desktop | Rarely included | ✓ |
 | Full setup guide | Minimal | ✓ Step-by-step docx included |
 
@@ -234,9 +234,13 @@ macOS will warn about a conflict between Spotlight and Input Sources — click O
 
 | Key | Action |
 |---|---|
-| `F2` | Rename file |
-| `Delete` or `Backspace` | Move to bin |
-| `Ctrl+C` then `Ctrl+V` | Move file to destination (paste = move, like Windows Explorer) |
+| `F2` | Rename file (passes through unchanged in Excel and Numbers) |
+| `Backspace` | Delete character back during rename |
+| `Del` | Delete character forward during rename |
+| `Win+Backspace` or `Win+Del` | Move file to Bin |
+| `Ctrl+C` | Copy file |
+| `Ctrl+V` | Paste copy of file |
+| `Ctrl+C` → navigate → `Ctrl+M` | Move file to destination |
 
 ### Browsers only
 
@@ -277,6 +281,63 @@ macOS will warn about a conflict between Spotlight and Input Sources — click O
 ## Full setup guide
 
 A complete step-by-step setup guide is included in `docs/mac_windows_keyboard_setup.docx`. It covers Homebrew, Karabiner installation, all permissions, keyboard setup assistant, EventViewer verification, all macOS shortcut assignments, and a smoke test checklist to tick off after each fresh setup.
+
+---
+
+## Changelog
+
+### v26 — Finder delete key fix
+
+**1. Backspace and Del keys now work normally everywhere including during Finder rename**
+Removed the remaining `Del → Bin` rule in Finder. Karabiner has no way to distinguish Finder's file-browsing state from its rename text field — both share the same bundle identifier. Any plain key rule in Finder fires during rename too, making it impossible to type or edit filenames safely. The only reliable fix is to require a modifier for the Bin action.
+
+**2. Win+Delete → Move to Bin (replaces all previous Bin rules)**
+Both `Win+Backspace` and `Win+Del` now move files to Bin in Finder (sends `Cmd+Backspace` internally). Since you would never hold the Win key while typing a filename, this cannot accidentally fire during rename. Works universally — no app-specific conditions needed.
+
+---
+
+### v25 — Finder rename, Excel F2, file move workflow fixes
+
+**1. Backspace no longer deletes entire filename during Finder rename**
+The `Backspace → Bin` rule could not distinguish Finder browsing mode from rename text field mode. Pressing Backspace while renaming sent `Cmd+Backspace` which deleted the entire filename. Removed the Backspace→Bin mapping. *(The remaining Del→Bin portion was fully removed in v26.)*
+
+**2. Ctrl+C and Ctrl+V now work correctly during Finder rename**
+The `Ctrl+V → Move file` rule fired even inside the rename text field, sending `Cmd+Option+V` (Move Item Here) instead of paste. Removed this rule and replaced with `Ctrl+M` — see item 3.
+
+**3. File move in Finder reassigned to Ctrl+M**
+Removed `Ctrl+V → Move file` and replaced with `Ctrl+M → Cmd+Option+V`. M for Move is unambiguous and conflicts with nothing in any app. Workflow: select file → `Ctrl+C` → navigate to destination → `Ctrl+M` to move.
+
+**4. F2 excluded in Excel and Numbers**
+The universal `F2 → Enter` rule was intercepting F2 before Excel and Numbers could see it, preventing native cell edit mode. F2 now passes through unchanged in `com.microsoft.Excel` and `com.apple.iWork.Numbers`. F2 continues to trigger rename in Finder and edit mode in all other apps.
+
+**5. Ctrl+K added universally**
+Chrome on macOS has a built-in `Ctrl+K` shortcut inherited from Unix terminals that deletes text from cursor to end of line. This was firing instead of Insert Link. Added `Ctrl+K → Cmd+K` universally. `Cmd+K` is Insert Link in Chrome, VS Code, Word, Evernote, Notion and most other apps.
+
+---
+
+### v24 — Finder file operations, screenshots, multi-select mouse fix
+
+**1. Del key moves files to Bin in Finder**
+On macOS, Delete/Backspace does nothing to files in Finder — the native shortcut is `Cmd+Delete`. Added a Finder-only rule mapping both Backspace and Del to `Cmd+Backspace`. *(Revised across v25 and v26 due to rename conflicts — see above.)*
+
+**2. Ctrl+V moves files in Finder**
+Added a Finder-only `Ctrl+V → Cmd+Option+V` rule so that `Ctrl+C` followed by `Ctrl+V` in the destination folder moves the file — matching Windows Explorer behaviour. *(Reassigned to Ctrl+M in v25 due to rename conflict.)*
+
+**3. Win+Shift+S → region screenshot**
+Maps to `Cmd+Shift+4` which opens the macOS crosshair selector. Drag to capture any region, saved to clipboard and Desktop — equivalent to Windows Snip.
+
+**4. Win+Shift+F → screenshot toolbar**
+Maps to `Cmd+Shift+5` which opens the full macOS screenshot toolbar with options for window capture, full screen, and screen recording.
+
+**5. Mouse "Modify events" — documented**
+Karabiner-Elements requires "Modify events" to be turned ON separately for the mouse in the Devices tab. Without this, `Ctrl+Click` multi-select does not work. This toggle resets to OFF every time a new device is connected or the Karabiner profile is deleted.
+
+**6. Win+D Show Desktop fix for non-Apple keyboards**
+`apple_vendor_keyboard_key_code: expose_desktop` only works on Apple keyboards. Remapped Win+D to send `Ctrl+F11` instead. Requires one-time setup: System Settings → Keyboard → Keyboard Shortcuts → Mission Control → Show Desktop → set to `Ctrl+F11`.
+
+---
+
+*For previous changelog entries see git history.*
 
 ---
 
