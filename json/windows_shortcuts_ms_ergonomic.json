@@ -437,6 +437,23 @@
          ]
       },
       {
+         "description": "Delete",
+         "manipulators": [
+            {
+               "type": "basic",
+               "from": {
+                  "key_code": "delete_forward"
+               },
+               "to": [
+                  {
+                     "key_code": "delete_or_backspace",
+                     "modifiers": ["command"]
+                  }
+               ]
+            }
+         ]
+      },
+      {
          "description": "Delete (Ctrl)",
          "manipulators": [
             {
